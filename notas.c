@@ -8,6 +8,7 @@ void pedirNotas(int nEst, float notas[][N_ASIG]);
 void calcProms(int nEst, float notas[][N_ASIG], float promEst[], float promAsig[]);
 void buscarExt(int nEst, float notas[][N_ASIG], float maxEst[], float minEst[], float maxAsig[], float minAsig[]);
 void contarApr(int nEst, float notas[][N_ASIG], int apr[], int rep[]);
+void mostrarRes(int nEst, float notas[][N_ASIG], float promEst[], float promAsig[], float maxEst[], float minEst[], float maxAsig[], float minAsig[], int apr[], int rep[]);
 
 int main() {
     int nEst;
@@ -35,6 +36,7 @@ int main() {
     calcProms(nEst, notas, promEst, promAsig);
     buscarExt(nEst, notas, maxEst, minEst, maxAsig, minAsig);
     contarApr(nEst, notas, apr, rep);
+    mostrarRes(nEst, notas, promEst, promAsig, maxEst, minEst, maxAsig, minAsig, apr, rep);
     
     return 0;
 }
@@ -100,5 +102,42 @@ void contarApr(int nEst, float notas[][N_ASIG], int apr[], int rep[]) {
             if (notas[i][j] >= NOTA_APR) apr[j]++;
             else rep[j]++;
         }
+    }
+}
+
+void mostrarRes(int nEst, float notas[][N_ASIG], float promEst[], float promAsig[], float maxEst[], float minEst[], float maxAsig[], float minAsig[], int apr[], int rep[]) {
+    printf("\n========================================\n");
+    printf("         RESULTADOS GENERALES\n");
+    printf("========================================\n");
+    
+    printf("\n--- PROMEDIOS POR ESTUDIANTE ---\n");
+    printf("%-12s %-8s %-8s %-8s %-10s\n", "Estudiante", "Asig. 1", "Asig. 2", "Asig. 3", "Promedio");
+    printf("-------------------------------------------------------\n");
+    for (int i = 0; i < nEst; i++) {
+        printf("%-12d ", i + 1);
+        for (int j = 0; j < N_ASIG; j++) {
+            printf("%-8.2f ", notas[i][j]);
+        }
+        printf("%-10.2f\n", promEst[i]);
+    }
+    
+    printf("\n--- PROMEDIO POR ASIGNATURA ---\n");
+    for (int j = 0; j < N_ASIG; j++) {
+        printf("Asignatura %d: %.2f\n", j + 1, promAsig[j]);
+    }
+    
+    printf("\n--- EXTREMOS POR ESTUDIANTE ---\n");
+    for (int i = 0; i < nEst; i++) {
+        printf("Estudiante %d: Max = %.2f, Min = %.2f\n", i + 1, maxEst[i], minEst[i]);
+    }
+    
+    printf("\n--- EXTREMOS POR ASIGNATURA ---\n");
+    for (int j = 0; j < N_ASIG; j++) {
+        printf("Asignatura %d: Max = %.2f, Min = %.2f\n", j + 1, maxAsig[j], minAsig[j]);
+    }
+    
+    printf("\n--- APROBADOS/REPROBADOS ---\n");
+    for (int j = 0; j < N_ASIG; j++) {
+        printf("Asignatura %d: Aprobados = %d, Reprobados = %d\n", j + 1, apr[j], rep[j]);
     }
 }
