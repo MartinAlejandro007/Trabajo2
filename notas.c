@@ -5,8 +5,9 @@
 #define NOTA_APR 6.0
 
 void pedirNotas(int nEst, float notas[][N_ASIG]);
-void calcularPromediosEstudiante(int nEst, float notas[][N_ASIG], float promEst[]);
-void calcularPromediosAsignatura(int nEst, float notas[][N_ASIG], float promAsig[]);
+void calcProms(int nEst, float notas[][N_ASIG], float promEst[], float promAsig[]);
+void buscarExt(int nEst, float notas[][N_ASIG], float maxEst[], float minEst[], float maxAsig[], float minAsig[]);
+void contarApr(int nEst, float notas[][N_ASIG], int apr[], int rep[]);
 
 int main() {
     int nEst;
@@ -31,18 +32,9 @@ int main() {
     int rep[N_ASIG];
     
     pedirNotas(nEst, notas);
-    calcularPromediosEstudiante(nEst, notas, promEst);
-    calcularPromediosAsignatura(nEst, notas, promAsig);
-    
-    printf("\n=== PROMEDIOS ===\n");
-    printf("\n-- Por Estudiante --\n");
-    for (int i = 0; i < nEst; i++) {
-        printf("Estudiante %d: %.2f\n", i + 1, promEst[i]);
-    }
-    printf("\n-- Por Asignatura --\n");
-    for (int j = 0; j < N_ASIG; j++) {
-        printf("Asignatura %d: %.2f\n", j + 1, promAsig[j]);
-    }
+    calcProms(nEst, notas, promEst, promAsig);
+    buscarExt(nEst, notas, maxEst, minEst, maxAsig, minAsig);
+    contarApr(nEst, notas, apr, rep);
     
     return 0;
 }
@@ -62,22 +54,51 @@ void pedirNotas(int nEst, float notas[][N_ASIG]) {
     }
 }
 
-void calcularPromediosEstudiante(int nEst, float notas[][N_ASIG], float promEst[]) {
+void calcProms(int nEst, float notas[][N_ASIG], float promEst[], float promAsig[]) {
     for (int i = 0; i < nEst; i++) {
-        float suma = 0;
+        float sum = 0;
         for (int j = 0; j < N_ASIG; j++) {
-            suma += notas[i][j];
+            sum += notas[i][j];
         }
-        promEst[i] = suma / N_ASIG;
+        promEst[i] = sum / N_ASIG;
+    }
+    
+    for (int j = 0; j < N_ASIG; j++) {
+        float sum = 0;
+        for (int i = 0; i < nEst; i++) {
+            sum += notas[i][j];
+        }
+        promAsig[j] = sum / nEst;
     }
 }
 
-void calcularPromediosAsignatura(int nEst, float notas[][N_ASIG], float promAsig[]) {
-    for (int j = 0; j < N_ASIG; j++) {
-        float suma = 0;
-        for (int i = 0; i < nEst; i++) {
-            suma += notas[i][j];
+void buscarExt(int nEst, float notas[][N_ASIG], float maxEst[], float minEst[], float maxAsig[], float minAsig[]) {
+    for (int i = 0; i < nEst; i++) {
+        maxEst[i] = notas[i][0];
+        minEst[i] = notas[i][0];
+        for (int j = 1; j < N_ASIG; j++) {
+            if (notas[i][j] > maxEst[i]) maxEst[i] = notas[i][j];
+            if (notas[i][j] < minEst[i]) minEst[i] = notas[i][j];
         }
-        promAsig[j] = suma / nEst;
+    }
+    
+    for (int j = 0; j < N_ASIG; j++) {
+        maxAsig[j] = notas[0][j];
+        minAsig[j] = notas[0][j];
+        for (int i = 1; i < nEst; i++) {
+            if (notas[i][j] > maxAsig[j]) maxAsig[j] = notas[i][j];
+            if (notas[i][j] < minAsig[j]) minAsig[j] = notas[i][j];
+        }
+    }
+}
+
+void contarApr(int nEst, float notas[][N_ASIG], int apr[], int rep[]) {
+    for (int j = 0; j < N_ASIG; j++) {
+        apr[j] = 0;
+        rep[j] = 0;
+        for (int i = 0; i < nEst; i++) {
+            if (notas[i][j] >= NOTA_APR) apr[j]++;
+            else rep[j]++;
+        }
     }
 }
